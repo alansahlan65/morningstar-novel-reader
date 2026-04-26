@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { uiCopy } from "../content/uiCopy";
 import { Button } from "../components/Button";
 import { Layout } from "../components/Layout";
@@ -32,10 +32,6 @@ type ReaderProps = {
   onThemeChange: (theme: ThemePreference) => void;
   onToggleTheme: () => void;
 };
-
-function prefersReducedMotion(): boolean {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
 
 function calculateProgress(): number {
   const root = document.documentElement;
@@ -109,22 +105,24 @@ export function Reader({
   const [listenOpen, setListenOpen] = useState(false);
   const [mode, setMode] = useState<"read" | "listen">("read");
   const lastSavedAt = useRef(0);
+  const restoredChapterKey = useRef<string | null>(null);
 
   const renderedBlocks = useMemo(
     () => chapter.blocks.map((block, index) => renderBlock(block, index, chapter.blocks)),
     [chapter.blocks]
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    const chapterKey = `${part.id}:${chapter.id}`;
+    if (restoredChapterKey.current === chapterKey) {
+      return;
+    }
+
+    restoredChapterKey.current = chapterKey;
     const targetY = savedProgress?.scrollY ?? 0;
-    window.requestAnimationFrame(() => {
-      window.scrollTo({
-        top: targetY,
-        behavior: targetY > 0 && !prefersReducedMotion() ? "smooth" : "auto"
-      });
-    });
+    window.scrollTo(0, targetY);
     setProgressPercent(savedProgress?.progressPercent ?? 0);
-  }, [chapter.id, part.id, savedProgress?.progressPercent, savedProgress?.scrollY]);
+  }, [chapter.id, part.id]);
 
   useEffect(() => {
     let ticking = false;
