@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.vite/
+.DS_Store
+*.local
+
+# Local QA captures and browser profiles
+artifacts/
+
+# TypeScript incremental build cache
+*.tsbuildinfo
+node_modules/.tmp/
