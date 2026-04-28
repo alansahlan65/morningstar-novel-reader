@@ -1,5 +1,6 @@
 import { generatedNovelParts } from "./novel.generated";
 import type { CoverTone, NovelChapter, NovelPart } from "../types/novel";
+import { splitLongParagraphBlocks } from "../utils/paragraphSplitting";
 
 const partMeta: Record<
   string,
@@ -37,7 +38,11 @@ const partMeta: Record<
 export const novelParts: NovelPart[] = generatedNovelParts.map((part) => ({
   ...part,
   subtitle: partMeta[part.id].subtitle,
-  coverTone: partMeta[part.id].coverTone
+  coverTone: partMeta[part.id].coverTone,
+  chapters: part.chapters.map((chapter) => ({
+    ...chapter,
+    blocks: splitLongParagraphBlocks(chapter.blocks)
+  }))
 }));
 
 export const totalChapterCount = novelParts.reduce(
