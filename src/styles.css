@@ -689,8 +689,10 @@ a:focus-visible,
   margin: 0 auto;
   font-family: var(--font-serif);
   font-size: var(--reader-size);
+  hyphens: none;
   line-height: 1.74;
-  overflow-wrap: break-word;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 .reader-content[data-width="narrow"] {
@@ -782,10 +784,12 @@ a:focus-visible,
 
 .reader-paragraph {
   margin: 0 0 0.8em;
-  hyphens: auto;
+  hyphens: none;
+  overflow-wrap: normal;
   text-align: justify;
   text-indent: 1.25em;
   text-wrap: pretty;
+  word-break: normal;
 }
 
 .reader-paragraph--flush {
