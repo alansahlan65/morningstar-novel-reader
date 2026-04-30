@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { NovelBlock } from "../types/novel";
 import {
+  countDialogueSpans,
   splitLongParagraphBlocks,
   splitLongParagraphText
 } from "./paragraphSplitting";
@@ -39,6 +40,52 @@ describe("splitLongParagraphText", () => {
       ].join(" "),
       "Repetition only made the lie expensive."
     ]);
+    expect(result.join(" ")).toBe(paragraph);
+  });
+
+  it("splits paragraphs with more than two dialogue spans", () => {
+    const paragraph = [
+      "“First,” Jack said.",
+      "“Second.”",
+      "The room waited.",
+      "“Third.”",
+      "“Fourth.”",
+      "He looked away.",
+      "“Fifth.”"
+    ].join(" ");
+
+    const result = splitLongParagraphText(paragraph, {
+      maxDialoguesPerParagraph: 2,
+      maxSentencesPerParagraph: 8,
+      longParagraphWordThreshold: 999,
+      targetWordsPerParagraph: 999
+    });
+
+    expect(result).toEqual([
+      "“First,” Jack said. “Second.” The room waited.",
+      "“Third.” “Fourth.” He looked away.",
+      "“Fifth.”"
+    ]);
+    expect(result.every((item) => countDialogueSpans(item) <= 2)).toBe(true);
+    expect(result.join(" ")).toBe(paragraph);
+  });
+
+  it("splits dialogue-dense single sentences at quote boundaries when needed", () => {
+    const paragraph =
+      "“First,” he said, “second,” then finally, “third,” before the door closed.";
+
+    const result = splitLongParagraphText(paragraph, {
+      maxDialoguesPerParagraph: 2,
+      maxSentencesPerParagraph: 8,
+      longParagraphWordThreshold: 999,
+      targetWordsPerParagraph: 999
+    });
+
+    expect(result).toEqual([
+      "“First,” he said, “second,” then finally,",
+      "“third,” before the door closed."
+    ]);
+    expect(result.every((item) => countDialogueSpans(item) <= 2)).toBe(true);
     expect(result.join(" ")).toBe(paragraph);
   });
 });
