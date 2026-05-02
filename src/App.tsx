@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getChapter, getFirstChapter, getPart } from "./content/novel";
 import { ReaderSettingsSheet } from "./components/ReaderSettingsSheet";
 import {
@@ -39,9 +39,9 @@ export default function App() {
     return () => window.removeEventListener("hashchange", handleRouteChange);
   }, []);
 
-  function refreshReadingState() {
+  const refreshReadingState = useCallback(function refreshReadingState() {
     setReadingState(getStoredReadingState());
-  }
+  }, []);
 
   function continueReading() {
     const fallback = getFirstChapter();

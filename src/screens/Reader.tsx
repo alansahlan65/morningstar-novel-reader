@@ -125,11 +125,14 @@ export function Reader({
   }, [chapter.id, part.id]);
 
   useEffect(() => {
+    let frameId: number | null = null;
     let ticking = false;
 
-    function persistProgress(force = false) {
+    function persistProgress(force = false, updateState = true) {
       const nextPercent = calculateProgress();
-      setProgressPercent(nextPercent);
+      if (updateState) {
+        setProgressPercent(nextPercent);
+      }
 
       const now = Date.now();
       if (!force && now - lastSavedAt.current < 500) {
@@ -152,14 +155,15 @@ export function Reader({
         return;
       }
       ticking = true;
-      window.requestAnimationFrame(() => {
+      frameId = window.requestAnimationFrame(() => {
         persistProgress();
+        frameId = null;
         ticking = false;
       });
     }
 
     function handleBeforeUnload() {
-      persistProgress(true);
+      persistProgress(true, false);
     }
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -167,7 +171,10 @@ export function Reader({
     persistProgress(true);
 
     return () => {
-      persistProgress(true);
+      if (frameId !== null) {
+        window.cancelAnimationFrame(frameId);
+      }
+      persistProgress(true, false);
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
