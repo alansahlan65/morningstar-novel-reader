@@ -94,9 +94,11 @@ export function LibraryHome({
               >
                 <span className="mini-card__sigil">{item.initial}</span>
                 <span className="mini-card__category">{item.origin}</span>
-                <strong>{item.name}</strong>
-                <small>{item.role}</small>
-                <em>{item.subtitle}</em>
+                <span className="mini-card__copy">
+                  <strong>{item.name}</strong>
+                  <small>{item.role}</small>
+                  <em>{item.subtitle}</em>
+                </span>
               </button>
             ))}
           </div>
@@ -131,9 +133,11 @@ export function LibraryHome({
               >
                 <span className="mini-card__sigil">{item.initial}</span>
                 <span className="mini-card__category">{item.origin}</span>
-                <strong>{item.name}</strong>
-                <small>{item.role}</small>
-                <em>{item.subtitle}</em>
+                <span className="mini-card__copy">
+                  <strong>{item.name}</strong>
+                  <small>{item.role}</small>
+                  <em>{item.subtitle}</em>
+                </span>
               </button>
             ))}
           </div>
