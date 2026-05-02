@@ -6,6 +6,7 @@ type TopBarProps = {
   eyebrow?: string;
   title?: string;
   onBack?: () => void;
+  onMenu?: () => void;
   onSettings?: () => void;
 };
 
@@ -13,13 +14,16 @@ export function TopBar({
   eyebrow = uiCopy.libraryEyebrow,
   title = uiCopy.appTitle,
   onBack,
+  onMenu,
   onSettings
 }: TopBarProps) {
+  const leadingAction = onBack ?? onMenu;
+
   return (
     <header className="top-bar">
       <IconButton
         label={onBack ? "Back to library" : "Open menu"}
-        onClick={onBack}
+        onClick={leadingAction}
         type="button"
       >
         {onBack ? <BackIcon /> : <MenuIcon />}

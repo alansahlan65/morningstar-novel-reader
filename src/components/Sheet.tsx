@@ -11,6 +11,7 @@ import { CloseIcon } from "./icons";
 
 type SheetProps = {
   children: ReactNode;
+  className?: string;
   description?: string;
   open: boolean;
   title: string;
@@ -20,7 +21,14 @@ type SheetProps = {
 const FOCUSABLE =
   'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
 
-export function Sheet({ children, description, open, title, onClose }: SheetProps) {
+export function Sheet({
+  children,
+  className,
+  description,
+  open,
+  title,
+  onClose
+}: SheetProps) {
   const titleId = useId();
   const descriptionId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -97,7 +105,7 @@ export function Sheet({ children, description, open, title, onClose }: SheetProp
         aria-describedby={description ? descriptionId : undefined}
         aria-labelledby={titleId}
         aria-modal="true"
-        className="sheet"
+        className={["sheet", className].filter(Boolean).join(" ")}
         onKeyDown={handleTrapFocus}
         ref={dialogRef}
         role="dialog"

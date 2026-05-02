@@ -6,6 +6,7 @@ dist/
 
 # Local QA captures and browser profiles
 artifacts/
+vite-preview*.log
 
 # TypeScript incremental build cache
 *.tsbuildinfo
